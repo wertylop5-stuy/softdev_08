@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<title>Requesting</title>
+</head>
+<body>
+	{% if bad_username %}
+	<h1>Bad username</h1>
+	{% endif %}
+	
+	{% if bad_password %}
+	<h1>Bad password</h1>
+	{% endif %} 
+	
+	{% if username %}
+	<h1>Hello {{username}}! </h1>
+	<form method = "POST" action="/logout">
+		<input type="submit" value="Logout">
+	</form>
+	{% else %}
+	<form method="POST">
+		<input name="username" type="text">
+		<input name="password" type="password" hint="password">
+		<input type="submit" value="Login">
+	</form>
+	{% endif %}
+</body>
+</html>
