@@ -5,13 +5,10 @@
 	<title>Requesting</title>
 </head>
 <body>
-	{% if bad_username %}
-	<h1>Bad username</h1>
-	{% endif %}
-	
-	{% if bad_password %}
-	<h1>Bad password</h1>
-	{% endif %} 
+	{% set messages = get_flashed_messages() %}
+	{% for message in messages %}
+		<h1>{{message}}</h1>
+	{% endfor %}
 	
 	{% if username %}
 	<h1>Hello {{username}}! </h1>

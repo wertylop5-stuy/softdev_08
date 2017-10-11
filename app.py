@@ -1,5 +1,5 @@
 from flask import Flask, render_template, \
-		request, session, redirect, url_for
+		request, session, redirect, url_for, flash
 import os
 
 master_username = "hello"
@@ -9,6 +9,17 @@ SESSION_KEY = "lol"
 
 app = Flask(__name__)
 app.secret_key = os.urandom(8)
+
+SUCCESS = 0
+BAD_USERNAME = 1
+BAD_PASSWORD = 2
+
+def auth(user, pwrd):
+	if user == master_username:
+		if pwrd == master_password:
+			return SUCCESS
+		return BAD_PASSWORD
+	return BAD_USERNAME
 
 @app.route("/", methods=["GET", "POST"])
 def root():
@@ -43,6 +54,18 @@ def root():
 	
 	return render_template("index.html", 
 				username=username)
+
+@app.route("/welcome")
+def welcome():
+	pass
+	if SESSION_KEY in session:
+		return render_template("index.html", 
+				username=session[SESSION_KEY])
+
+
+@app.route("/auth", methods=["POST"])
+def auth():
+	pass
 
 @app.route("/logout", methods=["POST"])
 def logout():
