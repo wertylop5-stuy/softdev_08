@@ -14,58 +14,44 @@ SUCCESS = 0
 BAD_USERNAME = 1
 BAD_PASSWORD = 2
 
-def auth(user, pwrd):
+def authenticate(user, pwrd):
 	if user == master_username:
 		if pwrd == master_password:
 			return SUCCESS
 		return BAD_PASSWORD
 	return BAD_USERNAME
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/")
 def root():
-	username = ""
-	password = ""
-	
 	if SESSION_KEY in session:
-		return render_template("index.html", 
-				username=session[SESSION_KEY])
-	
-	if request.method == "GET":
-		if request.args:
-			username = request.args["username"]
-			password = request.args["password"]
-		else:
-			return render_template("index.html")
-
-	elif request.method == "POST":
-		if request.form:
-			username = request.form["username"]
-			password = request.form["password"]
-		else:
-			return render_template("index.html")
-	
-	if username == "" or username != master_username:
-		return render_template("index.html", bad_username=True)
-	
-	if password == "" or password != master_password:
-		return render_template("index.html", bad_password=True)
-	
-	session[SESSION_KEY] = username
-	
-	return render_template("index.html", 
-				username=username)
+		return redirect(url_for("welcome"))
+	return render_template("index.html")
 
 @app.route("/welcome")
 def welcome():
-	pass
 	if SESSION_KEY in session:
-		return render_template("index.html", 
-				username=session[SESSION_KEY])
+		return render_template("welcome.html",
+					username=session[SESSION_KEY])
+	return redirect(url_for("root"))
 
 
 @app.route("/auth", methods=["POST"])
 def auth():
-	pass
+	if SESSION_KEY in session:
+		return redirect(url_for("welcome"))
+	
+	status_code = authenticate(request.form["username"],
+					request.form["password"])
+	
+	if status_code == SUCCESS:
+		session[SESSION_KEY] = request.form["username"];
+		return redirect(url_for("welcome"))
+	elif status_code == BAD_USERNAME:
+		flash("Bad Username")
+		return redirect(url_for("root"))
+	elif status_code == BAD_PASSWORD:
+		flash("Bad Password")
+		return redirect(url_for("root"))
 
 @app.route("/logout", methods=["POST"])
 def logout():

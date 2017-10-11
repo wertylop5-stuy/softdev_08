@@ -1,23 +1,9 @@
-{% extends base.html %}
+{% extends "base.html" %}
 
-{% 
-<body>
-	{% set messages = get_flashed_messages() %}
-	{% for message in messages %}
-		<h1>{{message}}</h1>
-	{% endfor %}
-	
-	{% if username %}
-	<h1>Hello {{username}}! </h1>
-	<form method = "POST" action="/logout">
-		<input type="submit" value="Logout">
-	</form>
-	{% else %}
-	<form method="POST">
-		<input name="username" type="text">
-		<input name="password" type="password" hint="password">
-		<input type="submit" value="Login">
-	</form>
-	{% endif %}
-</body>
-</html>
+{% block body %}
+<form method="POST" action="/auth">
+	<input name="username" type="text">
+	<input name="password" type="password" hint="password">
+	<input type="submit" value="Login">
+</form>
+{% endblock %}
